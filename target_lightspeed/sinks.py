@@ -57,7 +57,7 @@ class UpdateInventorySink(LightspeedSink):
                         return {"error": f"Stock is only updatable for variants. Product '{name}' with id {prod_id} has many variants, please send the variant sku or id to update the stock"}
         
         if not variant: 
-            return {"error": f"Stock is only updatable for variants. Product id {product_id} has many variants, please send the variant sku or id to update the stock"}
+            return {"error": f"Variant was not found for product id {product_id}, variant id {variant_id}, sku {sku} or name {name}."}
                 
         # calculate stockLevel
         id = variant.get("id")
@@ -98,5 +98,5 @@ class UpdateInventorySink(LightspeedSink):
             self.logger.info(f"Variant with id {variant_id} updated.  New stock {new_stock_level}")
             # add new stock to the variants list, in case there's 2 records for the same variant
             variant = [variant for variant in LightspeedSink.variants if variant["id"] == variant_id]
-            # variant[0]["stockLevel"] = new_stock_level
+            variant[0]["stockLevel"] = new_stock_level
             return variant_id, True, state_updates
